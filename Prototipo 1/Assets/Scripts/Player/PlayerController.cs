@@ -14,6 +14,11 @@ public class PlayerController : MonoBehaviour
     private Transform groundCheck;
     [SerializeField]
     private LayerMask groundLayer;
+    [SerializeField]
+    private Transform wallCheckLeft;
+    [SerializeField]
+    private Transform wallCheckRight;
+    
 
 
 
@@ -22,6 +27,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        Application.targetFrameRate = 60; // fps
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -29,6 +35,9 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+
+        Time.timeScale = 0.5f; // velocidade
+
         float horizontal = Input.GetAxisRaw("Horizontal");
         if (horizontal != 0){
             anim.SetBool("idle", false);
@@ -53,7 +62,18 @@ public class PlayerController : MonoBehaviour
          // parte do pulo
         Jump();
 
-        Move();
+        
+
+        bool isWallL = Physics2D.OverlapCircle(wallCheckLeft.position, 0.1f, groundLayer);
+        bool isWallR = Physics2D.OverlapCircle(wallCheckRight.position, 0.1f, groundLayer);
+        if (isWallL && horizontal < 0){
+            print("colidiu na esquerda");
+        }else if (isWallR && horizontal > 0){
+            print("colidiu na direita");
+        }
+        else{
+            Move();
+        }
     }
 
     private void Jump(){
