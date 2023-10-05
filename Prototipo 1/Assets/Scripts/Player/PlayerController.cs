@@ -30,15 +30,11 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
-        moveDirection = new Vector2(horizontal, 0);
-
         if (horizontal != 0){
             anim.SetBool("idle", false);
         }else{
             anim.SetBool("idle", true);
         }
-
-
         if (horizontal > 0)
         {
             spriteRenderer.flipX = false; // Sem inversão horizontal
@@ -48,19 +44,32 @@ public class PlayerController : MonoBehaviour
             spriteRenderer.flipX = true; // Inversão horizontal para trás
         }
 
+        bool isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.1f, groundLayer);
+        if (isGrounded){
+            anim.SetBool("nochao", true);
+        }else{
+            anim.SetBool("nochao", false);
+        }
          // parte do pulo
+        Jump();
+
+        Move();
+    }
+
+    private void Jump(){
         bool isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.1f, groundLayer); // para checar se o player ta no chão
 
         if (isGrounded && Input.GetButtonDown("Jump")){
-            print(jumpforce);
-            //rb.velocity = Vector2.up * jumpforce;//(rb.velocity.x, jumpforce);
-            rb.AddForce(new Vector2(0f, jumpforce), ForceMode2D.Impulse);
+            //rb.velocity = new Vector2(rb.velocity.x, jumpforce);
+            rb.velocity = Vector2.up * jumpforce;//(rb.velocity.x, jumpforce);
+            //rb.AddForce(new Vector2(0f, jumpforce), ForceMode2D.Impulse);
+            //rb.AddForce(new Vector3(0f, jumpforce, 0f), ForceMode2D.Impulse);
+
         }
     }
 
-    private void FixedUpdate()
-    {
-        Vector3 movePosition = (speed * Time.fixedDeltaTime * moveDirection.normalized) + rb.position;
-        rb.MovePosition(movePosition);
+    private void Move(){
+        Vector3 movement = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f);
+        transform.position += movement * Time.deltaTime * speed;
     }
 }
