@@ -24,16 +24,21 @@ public class PlayerController : MonoBehaviour
         float horizontal = Input.GetAxisRaw("Horizontal");
         moveDirection = new Vector2(horizontal, 0);
 
-        anim.SetFloat("Horizontal", horizontal);
+        if (horizontal != 0){
+            anim.SetBool("idle", false);
+        }else{
+            anim.SetBool("idle", true);
+        }
 
-        // if (horizontal > 0)
-        // {
-        //     spriteRenderer.flipX = false; // Sem inversão horizontal
-        // }
-        // else if (horizontal < 0)
-        // {
-        //     spriteRenderer.flipX = true; // Inversão horizontal para trás
-        // }
+
+        if (horizontal > 0)
+        {
+            spriteRenderer.flipX = false; // Sem inversão horizontal
+        }
+        else if (horizontal < 0)
+        {
+            spriteRenderer.flipX = true; // Inversão horizontal para trás
+        }
     }
 
     private void FixedUpdate()
