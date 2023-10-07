@@ -11,14 +11,20 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 moveDirection;
     [SerializeField]
-    private Transform groundCheck;
-    [SerializeField]
     private LayerMask groundLayer;
     [SerializeField]
-    private Transform wallCheckLeft;
-    [SerializeField]
     private Transform wallCheckRight;
-    
+    private float groundedTimer;
+    private bool isGrounded;
+    [SerializeField]
+    private Transform groundCheck;
+    private bool isWallF;
+    [SerializeField]
+    new Vector2 areaBoxGround;
+    [SerializeField]
+    new Vector2 areaBoxWall;
+    [SerializeField]
+    private float dashForce;
 
 
 
@@ -36,7 +42,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
 
-        Time.timeScale = 0.5f; // velocidade
+        Time.timeScale = 1f; // velocidade
 
         float horizontal = Input.GetAxisRaw("Horizontal");
         if (horizontal != 0){
@@ -46,39 +52,58 @@ public class PlayerController : MonoBehaviour
         }
         if (horizontal > 0)
         {
-            spriteRenderer.flipX = false; // Sem inversão horizontal
+            //spriteRenderer.flipX = false; // Sem inversão horizontal
+            transform.localScale = new Vector3(1f, transform.localScale.y, transform.localScale.z); // inverter o proprio objeto
         }
         else if (horizontal < 0)
         {
-            spriteRenderer.flipX = true; // Inversão horizontal para trás
+            //spriteRenderer.flipX = true; // Inversão horizontal para trás
+            transform.localScale = new Vector3(-1f, transform.localScale.y, transform.localScale.z);
         }
 
-        bool isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.1f, groundLayer);
+        isGrounded = Physics2D.OverlapBox(groundCheck.position, areaBoxGround, 0, groundLayer);
         if (isGrounded){
             anim.SetBool("nochao", true);
+            groundedTimer += Time.deltaTime;
         }else{
             anim.SetBool("nochao", false);
+            groundedTimer = 0f;
+        }
+
+        if (groundedTimer >= 0.05f){
+            // ai sim pode trocar a animação
+            anim.SetBool("mudarpraidle", true);
+        }else{
+            anim.SetBool("mudarpraidle", false);
         }
          // parte do pulo
         Jump();
 
+        Dash();
         
-
-        bool isWallL = Physics2D.OverlapCircle(wallCheckLeft.position, 0.1f, groundLayer);
-        bool isWallR = Physics2D.OverlapCircle(wallCheckRight.position, 0.1f, groundLayer);
-        if (isWallL && horizontal < 0){
-            print("colidiu na esquerda");
-        }else if (isWallR && horizontal > 0){
-            print("colidiu na direita");
-        }
-        else{
+        // if (isWallL && horizontal < 0){
+        //     //print("colidiu na esquerda");
+        // }else if (isWallR && horizontal > 0){
+        //     //print("colidiu na direita");
+        // }
+        // else{
+            
+        // }
+        
+        // pro player para de correr na parede
+        isWallF = Physics2D.OverlapBox(wallCheckRight.position, areaBoxWall, 0, groundLayer); 
+        if (!(horizontal < 0) && !isWallF){ // obrigatorio ter 2 ifs
+            Move();
+            }
+        else if (!(horizontal > 0) && !isWallF){
             Move();
         }
+
     }
 
     private void Jump(){
-        bool isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.1f, groundLayer); // para checar se o player ta no chão
 
+        isGrounded = Physics2D.OverlapBox(groundCheck.position, areaBoxGround, 0, groundLayer);
         if (isGrounded && Input.GetButtonDown("Jump")){
             //rb.velocity = new Vector2(rb.velocity.x, jumpforce);
             rb.velocity = Vector2.up * jumpforce;//(rb.velocity.x, jumpforce);
@@ -92,4 +117,21 @@ public class PlayerController : MonoBehaviour
         Vector3 movement = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f);
         transform.position += movement * Time.deltaTime * speed;
     }
+
+    private void Dash(){
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        //if (Input.GetButtonDown("left shift")){
+        if (Input.GetKeyDown(KeyCode.LeftShift) && isGrounded){
+            rb.AddForce(new Vector3(dashForce * horizontal, 0f, 0f), ForceMode2D.Impulse);
+        }
+        
+    }
+    private void OnDrawGizmos()
+    {
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(groundCheck.position, areaBoxGround);
+        Gizmos.DrawWireCube(wallCheckRight.position, areaBoxWall);
+    }
+
 }
