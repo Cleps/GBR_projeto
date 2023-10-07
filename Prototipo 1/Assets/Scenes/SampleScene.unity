@@ -259,6 +259,7 @@ GameObject:
   m_Component:
   - component: {fileID: 624009532}
   - component: {fileID: 624009531}
+  - component: {fileID: 624009540}
   - component: {fileID: 624009530}
   - component: {fileID: 624009535}
   - component: {fileID: 624009536}
@@ -266,7 +267,7 @@ GameObject:
   - component: {fileID: 624009537}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -289,10 +290,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   wallCheckRight: {fileID: 1492467845}
+  isGrounded: 0
   groundCheck: {fileID: 1437149266}
   areaBoxGround: {x: 0.21, y: 0.06}
   areaBoxWall: {x: 0.12, y: 0.34}
-  dashForce: 5
+  horizontal: 0
 --- !u!212 &624009531
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -490,6 +492,21 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.25679493, y: 0.48}
   m_EdgeRadius: 0
+--- !u!114 &624009540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 624009528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c520b7894923ab40b8a4396958cc3b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canDash: 1
+  speedDash: 4
+  timeDash: 0.2
 --- !u!1 &1053708142
 GameObject:
   m_ObjectHideFlags: 0

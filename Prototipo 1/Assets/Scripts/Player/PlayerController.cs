@@ -15,17 +15,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private Transform wallCheckRight;
     private float groundedTimer;
-    private bool isGrounded;
+    public bool isGrounded;
     [SerializeField]
     private Transform groundCheck;
     private bool isWallF;
     [SerializeField]
-    new Vector2 areaBoxGround;
+    private Vector2 areaBoxGround;
     [SerializeField]
-    new Vector2 areaBoxWall;
+    private Vector2 areaBoxWall;
     [SerializeField]
-    private float dashForce;
-
+    public float horizontal;
 
 
     private Animator anim;
@@ -44,7 +43,7 @@ public class PlayerController : MonoBehaviour
 
         Time.timeScale = 1f; // velocidade
 
-        float horizontal = Input.GetAxisRaw("Horizontal");
+        horizontal = Input.GetAxisRaw("Horizontal");
         if (horizontal != 0){
             anim.SetBool("idle", false);
         }else{
@@ -79,17 +78,6 @@ public class PlayerController : MonoBehaviour
          // parte do pulo
         Jump();
 
-        Dash();
-        
-        // if (isWallL && horizontal < 0){
-        //     //print("colidiu na esquerda");
-        // }else if (isWallR && horizontal > 0){
-        //     //print("colidiu na direita");
-        // }
-        // else{
-            
-        // }
-        
         // pro player para de correr na parede
         isWallF = Physics2D.OverlapBox(wallCheckRight.position, areaBoxWall, 0, groundLayer); 
         if (!(horizontal < 0) && !isWallF){ // obrigatorio ter 2 ifs
@@ -118,14 +106,6 @@ public class PlayerController : MonoBehaviour
         transform.position += movement * Time.deltaTime * speed;
     }
 
-    private void Dash(){
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        //if (Input.GetButtonDown("left shift")){
-        if (Input.GetKeyDown(KeyCode.LeftShift) && isGrounded){
-            rb.AddForce(new Vector3(dashForce * horizontal, 0f, 0f), ForceMode2D.Impulse);
-        }
-        
-    }
     private void OnDrawGizmos()
     {
 
