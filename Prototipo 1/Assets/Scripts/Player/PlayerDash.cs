@@ -14,8 +14,9 @@ public class PlayerDash : MonoBehaviour
     private PlayerController playerScript;
     private Rigidbody2D rbPlayer;
     private Animator anim;
-    private bool airDash;
-    private bool dash;
+    private bool hasFunctionBeenCalled = false;
+    private bool airdash;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,16 +35,22 @@ public class PlayerDash : MonoBehaviour
 
         if (timeDash <= 0)
         {
+            if (!hasFunctionBeenCalled){
+                zeraY();
+                hasFunctionBeenCalled = true;
+            }
             rbPlayer.gravityScale = originalGravity;
             isDashing = false;
             canDash = false;
             anim.SetBool("dash", false);
+        }else{
+            hasFunctionBeenCalled = false;
         }
 
         if (Input.GetMouseButton(1)) //&& playerScript.isGrounded)
         {
             timeDash -= Time.deltaTime;
-            if(canDash && !dash){
+            if(canDash && !airdash){
                 Dash();
             }
 
@@ -56,13 +63,19 @@ public class PlayerDash : MonoBehaviour
             isDashing = false;
             anim.SetBool("dash", false);
             timeDash = currentTimeDash;
+
+            if (!hasFunctionBeenCalled){
+                zeraY();
+                hasFunctionBeenCalled = true;
+            }
         }
 
-        if(playerScript.isGrounded && dash){
-            dash = false;
+        if(playerScript.isGrounded && airdash){
+            airdash = false;
+            hasFunctionBeenCalled = true;
         }
     
-        
+
     }
 
     private void Dash()
@@ -72,16 +85,19 @@ public class PlayerDash : MonoBehaviour
         rbPlayer.gravityScale = 0f;
         anim.SetBool("dash", true);
 
-        //rbPlayer.velocity = new Vector2(playerScript.transform.localScale.x * speedDash, 0f);// rbPlayer.velocity.y);
-        rb.velocity = playerScript.transform.localScale.x * speedDash / timeDash;
+        rbPlayer.velocity = new Vector2(playerScript.transform.localScale.x * speedDash, 0f);// rbPlayer.velocity.y);
         //transform.position += new Vector3(playerScript.transform.localScale.x * speedDash, 0f, 0f);
 
         if (!playerScript.isGrounded && isDashing){
-            dash = true;
+            airdash = true;
         }else{
-            dash = false;
+            airdash = false;
         }
 
+    }
+
+    private void zeraY(){
+        rbPlayer.velocity = new Vector2(0f, rbPlayer.velocity.y);
     }
 
 
