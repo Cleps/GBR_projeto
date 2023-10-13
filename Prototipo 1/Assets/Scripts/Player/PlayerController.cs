@@ -25,6 +25,8 @@ public class PlayerController : MonoBehaviour
     private Vector2 areaBoxWall;
     [SerializeField]
     public float horizontal;
+    public bool canMove;
+    private PlayerDash playerDashScript;
 
 
     private Animator anim;
@@ -36,6 +38,8 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        canMove = true;
+        playerDashScript = FindObjectOfType<PlayerDash>();
     }
 
     private void Update()
@@ -87,6 +91,14 @@ public class PlayerController : MonoBehaviour
             Move();
         }
 
+        if (playerDashScript.isDashing)
+        {
+            canMove = false;
+        }else{
+            canMove = true;
+        }
+
+
     }
 
     private void Jump(){
@@ -102,8 +114,10 @@ public class PlayerController : MonoBehaviour
     }
 
     private void Move(){
-        Vector3 movement = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f);
-        transform.position += movement * Time.deltaTime * speed;
+        if (canMove){
+            Vector3 movement = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, 0f);
+            transform.position += movement * Time.deltaTime * speed;
+        }
     }
 
     private void OnDrawGizmos()
