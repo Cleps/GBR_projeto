@@ -51,10 +51,10 @@ public class PlayerDash : MonoBehaviour
 
         else if(Input.GetMouseButtonUp(1))
         {
+            rbPlayer.gravityScale = originalGravity;
             canDash = true;
             isDashing = false;
             anim.SetBool("dash", false);
-            rbPlayer.gravityScale = originalGravity;
             timeDash = currentTimeDash;
         }
 
@@ -72,7 +72,9 @@ public class PlayerDash : MonoBehaviour
         rbPlayer.gravityScale = 0f;
         anim.SetBool("dash", true);
 
-        rbPlayer.velocity = new Vector2(playerScript.transform.localScale.x * speedDash, 0f);// rbPlayer.velocity.y);
+        //rbPlayer.velocity = new Vector2(playerScript.transform.localScale.x * speedDash, 0f);// rbPlayer.velocity.y);
+        rb.velocity = playerScript.transform.localScale.x * speedDash / timeDash;
+        //transform.position += new Vector3(playerScript.transform.localScale.x * speedDash, 0f, 0f);
 
         if (!playerScript.isGrounded && isDashing){
             dash = true;
