@@ -357,7 +357,7 @@ Transform:
   m_GameObject: {fileID: 624009528}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.763, y: 0.429, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -507,7 +507,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canDash: 1
   isDashing: 0
-  speedDash: 3
+  speedDash: 3.5
   timeDash: 0.4
 --- !u!1 &1053708142
 GameObject:
